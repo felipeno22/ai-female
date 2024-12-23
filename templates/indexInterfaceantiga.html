@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat com IA Feminina</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .chat-box {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .message {
+            margin: 10px 0;
+        }
+
+        .user-message {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .ai-message {
+            text-align: left;
+            font-style: italic;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <h2>Chat com IA Carinhosa</h2>
+        <div class="chat-box" id="chatBox">
+            <!-- As mensagens vão aparecer aqui -->
+        </div>
+        <input type="text" id="userInput" placeholder="Digite sua mensagem..." />
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+
+    <script>
+
+            function history(){
+                const chatBox = document.getElementById('chatBox');
+
+                fetch('http://127.0.0.1:5000//history')
+    .then(response => response.json())
+    .then(data => {
+        const history = data.history['conversations'];
+        //console.log(data.history['conversations'])
+        history.forEach(conv => {
+            
+            chatBox.innerHTML += `<div class="message user-message"><label><strong>Você:</strong></label><br>${conv.user}</div>`;
+            chatBox.innerHTML += `<div class="message ai-message"><label><strong>AI Female:</strong></label><br>${conv.bot}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    });
+
+
+
+            }
+
+
+
+
+        // Função para enviar a mensagem
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (!userInput) return;
+
+            // Adicionar a mensagem do usuário no chat
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML += `<div class="message user-message"><label><strong>Você:</strong></label><br>${userInput}</div>`;
+
+            
+            // Enviar a mensagem para o backend (API Flask)
+            fetch('http://127.0.0.1:5000/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ input: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Exibir a resposta da IA
+                const aiMessage = data.response;
+
+                if (aiMessage === "Desculpe, não entendi. Pode me ensinar o que devo responder?") {
+                        const answer = prompt("Ensine uma resposta para essa pergunta:");
+                        if (answer) {
+                            // Enviar resposta para `/teach`
+                            fetch('http://127.0.0.1:5000/teach', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ question: userInput, answer })
+                            })
+                                .then(resp => resp.json())
+                                .then(res => {
+                                    alert(res.message)
+                                    if(res.message=="Resposta adicionada com sucesso!"){
+                                        // Exibir a resposta no chat
+                        chatBox.innerHTML += `<div class="message ai-message"><label><strong>AI Female:</strong></label><br>${answer}</div>`;
+                                        // Scroll até o final do chat
+            chatBox.scrollTop = chatBox.scrollHeight;
+                    
+                    }
+                                     
+
+                                }).catch(err => console.error("Erro ao ensinar:", err));
+                        }
+                    } else {
+                        // Exibir a resposta no chat
+                        chatBox.innerHTML += `<div class="message ai-message"><label><strong>AI Female:</strong></label><br>${aiMessage}</div>`;
+                    }
+
+            })
+            .catch(error => console.error('Erro ao enviar mensagem:', error));
+
+            // Limpar o campo de entrada
+            document.getElementById('userInput').value = '';
+
+            // Scroll até o final do chat
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+        }
+
+        document.addEventListener('DOMContentLoaded', history);
+
+
+    </script>
+
+</body>
+</html>

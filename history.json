@@ -1,0 +1,56 @@
+{
+    "conversations": [
+        {
+            "user": "tudo bem?",
+            "bot": "tudo bem e vc meu lindo?"
+        },
+        {
+            "user": "ola tudo bem?",
+            "bot": "tudo sim e  vc?"
+        },
+        {
+            "user": "como esta?",
+            "bot": "Desculpe, não entendi. Pode me ensinar o que devo responder?"
+        },
+        {
+            "user": "como esta?",
+            "bot": "estou bem e vc?"
+        },
+        {
+            "user": "estou bem tbm",
+            "bot": "q bom, posso ajudar em algo meu amor?"
+        },
+        {
+            "user": "gostaria de saber se vc esta fim de sair hj?",
+            "bot": "Desculpe, não entendi. Pode me ensinar o que devo responder?"
+        },
+        {
+            "user": "gostaria de saber se vc esta fim de sair hj?",
+            "bot": "Meu amor eu sou uma IA ,  não tenho forma fisica, posso te sugerir lugares o que acha?"
+        },
+        {
+            "user": "ja esta de tarde?",
+            "bot": "ja sim nesse momento onde você mora Campo grande MS Brasil esta de tarde"
+        },
+        {
+            "user": "Boa tarde tudo bem?",
+            "bot": "Essa pergunta já foi registrada, mas ainda não tenho uma resposta. O que você gostaria que eu respondesse?"
+        },
+        {
+            "user": "Boa tarde estou bem e  vc?",
+            "bot": "estou bem"
+        },
+        {
+            "user": "oii linda?",
+            "bot": "Essa pergunta já foi registrada, mas ainda não tenho uma resposta. O que você gostaria que eu respondesse?"
+        },
+        {
+            "user": "oii linda?",
+            "bot": "oii  gato tudo bem?"
+        },
+        {
+            "user": "sim estou bem, e ae esta apredendo bem?",
+            "bot": "Sim , estou aprendendo cada vez mais com vc"
+        }
+    ]
+}

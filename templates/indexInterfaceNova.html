@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat com IA Feminina</title>
+    <style>
+        body {
+            font-family: 'Cursive', sans-serif;
+            background-color: #fdf2f8; /* Tons rosados */
+            margin: 0;
+            padding: 0;
+            color: #6a1b9a; /* Roxo elegante */
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 2px solid #e91e63; /* Rosa vibrante */
+        }
+
+        .chat-box {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #fce4ec; /* Rosa claro */
+            border-radius: 10px;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-message {
+            text-align: right;
+            background-color: #f8bbd0; /* Rosa pálido */
+        }
+
+        .ai-message {
+            text-align: left;
+            background-color: #f3e5f5; /* Lilás suave */
+        }
+
+        .timestamp {
+            font-size: 0.8em;
+            color: #7b1fa2; /* Roxo mais escuro */
+            display: block;
+            margin-top: 5px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e91e63;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #e91e63;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #d81b60;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Chat com sua IA Carinhosa</h2>
+        <div class="chat-box" id="chatBox">
+            <!-- As mensagens vão aparecer aqui -->
+        </div>
+        <input type="text" id="userInput" placeholder="Digite sua mensagem..." />
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+
+    <script>
+        function formatTimestamp() {
+            const now = new Date();
+            return now.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+        }
+
+        function history() {
+            const chatBox = document.getElementById('chatBox');
+
+            fetch('http://127.0.0.1:5000/history')
+                .then(response => response.json())
+                .then(data => {
+                    const history = data.history['conversations'];
+                    history.forEach(conv => {
+                        chatBox.innerHTML += `
+                            <div class="message user-message">
+                                <label><strong>Você:</strong></label><br>
+                                ${conv.user}
+                                <span class="timestamp">${formatTimestamp()}</span>
+                            </div>`;
+                        chatBox.innerHTML += `
+                            <div class="message ai-message">
+                                <label><strong>AI Female:</strong></label><br>
+                                ${conv.bot}
+                                <span class="timestamp">${formatTimestamp()}</span>
+                            </div>`;
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    });
+                });
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (!userInput) return;
+
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML += `
+                <div class="message user-message">
+                    <label><strong>Você:</strong></label><br>
+                    ${userInput}
+                    <span class="timestamp">${formatTimestamp()}</span>
+                </div>`;
+
+            fetch('http://127.0.0.1:5000/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ input: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const aiMessage = data.response;
+                chatBox.innerHTML += `
+                    <div class="message ai-message">
+                        <label><strong>AI Female:</strong></label><br>
+                        ${aiMessage}
+                        <span class="timestamp">${formatTimestamp()}</span>
+                    </div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .catch(error => console.error('Erro ao enviar mensagem:', error));
+
+            document.getElementById('userInput').value = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', history);
+    </script>
+</body>
+</html>
